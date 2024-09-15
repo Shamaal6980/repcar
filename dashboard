@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Card Status System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .status {
+            margin-bottom: 20px;
+        }
+        .status label {
+            margin-right: 10px;
+        }
+        .progress-bar {
+            height: 20px;
+            border-radius: 5px;
+            background: #ddd;
+            position: relative;
+        }
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .status-message {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Report Card Status System</h1>
+
+        <div class="status">
+            <label for="grade">Select Grade:</label>
+            <select id="grade">
+                <option value="LKG">LKG</option>
+                <option value="UKG">UKG</option>
+                <option value="Grade 1">Grade 1</option>
+                <option value="Grade 2">Grade 2</option>
+                <option value="Grade 3">Grade 3</option>
+                <option value="Grade 4">Grade 4</option>
+                <option value="Grade 5">Grade 5</option>
+                <option value="Grade 6">Grade 6</option>
+                <option value="Grade 7">Grade 7</option>
+                <option value="Grade 8">Grade 8</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+            </select>
+            
+            <label for="status">Select Status:</label>
+            <select id="status">
+                <option value="Setting Up">Setting Up</option>
+                <option value="Updating ST Comment">Updating ST Comment</option>
+                <option value="Updating CT Comment">Updating CT Comment</option>
+                <option value="Verification going on">Verification going on</option>
+                <option value="Printing Layout in Progress">Printing Layout in Progress</option>
+                <option value="Sent for Printing">Sent for Printing</option>
+                <option value="Printed">Printed</option>
+                <option value="Signatories Signing">Signatories Signing</option>
+                <option value="Filed and Completed">Filed and Completed</option>
+            </select>
+
+            <button onclick="updateStatus()">Update Status</button>
+        </div>
+
+        <table id="statusTable">
+            <thead>
+                <tr>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Status data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const statuses = {
+            "LKG": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "UKG": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 1": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 2": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 3": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 4": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 5": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 6": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 7": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 8": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 9": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"],
+            "Grade 10": ["Setting Up", "Updating ST Comment", "Updating CT Comment", "Verification going on", "Printing Layout in Progress", "Sent for Printing", "Printed", "Signatories Signing", "Filed and Completed"]
+        };
+
+        function updateStatus() {
+            const grade = document.getElementById('grade').value;
+            const status = document.getElementById('status').value;
+
+            // Update status in local storage
+            let gradeStatus = JSON.parse(localStorage.getItem('gradeStatus')) || {};
+            gradeStatus[grade] = status;
+            localStorage.setItem('gradeStatus', JSON.stringify(gradeStatus));
+
+            // Update table
+            displayStatus();
+        }
+
+        function displayStatus() {
+            const gradeStatus = JSON.parse(localStorage.getItem('gradeStatus')) || {};
+            const tableBody = document.querySelector('#statusTable tbody');
+            tableBody.innerHTML = '';
+
+            Object.keys(statuses).forEach(grade => {
+                const currentStatus = gradeStatus[grade] || 'Setting Up';
+                const totalSteps = statuses[grade].length;
+                const currentIndex = statuses[grade].indexOf(currentStatus);
+                const progressPercentage = ((currentIndex + 1) / totalSteps) * 100;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${grade}</td>
+                    <td>${currentStatus}</td>
+                    <td>
+                        <div class="progress-bar">
+                            <span style="width: ${progressPercentage}%; background: #4caf50;">${Math.round(progressPercentage)}%</span>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Initial display
+        displayStatus();
+    </script>
+</body>
+</html>
